@@ -28,9 +28,9 @@ static ssize_t device_write(struct file *,
 */
 /* Старший номер устройства нашего драйвера */
 static int Major;
-/* Устройство открыто?
+/* Устройство открыто?*/
 static int Device_Open = 0;
-* используется для предотвращения одновременного
+/* используется для предотвращения одновременного
 * обращения из нескольких процессов */
 /* Здесь будет собираться текст сообщения */
 static char msg[BUF_LEN];
@@ -65,9 +65,10 @@ void cleanup_module(void)
     /*
 * Отключение устройства
 */
-    int ret = unregister_chrdev(Major, DEVICE_NAME);
-    if (ret < 0)
-        printk("Error in unregister_chrdev: %d\n", ret);
+    unregister_chrdev(Major, DEVICE_NAME);
+    // int ret = unregister_chrdev(Major, DEVICE_NAME);
+    // if (ret < 0)
+    //     printk("Error in unregister_chrdev: %d\n", ret);
 }
 /*
 * Обработчики
