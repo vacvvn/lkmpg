@@ -7,7 +7,7 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/fs.h>
-#include <asm/uaccess.h> /* определение функции put_user */
+#include <linux/uaccess.h> /* определение функции put_user */
 /*
 * Прототипы функций, обычно их выносят в заголовочный файл (.h)
 */
