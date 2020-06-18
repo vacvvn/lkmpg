@@ -13,6 +13,7 @@ obj-m	+= hello-4.o
 obj-m	+= hello-5.o
 obj-m   += startstop.o
 startstop-objs := start.o stop.o
+obj-m 	+= chardev.o
 
 
 else
