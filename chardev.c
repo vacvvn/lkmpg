@@ -45,6 +45,7 @@ static struct file_operations fops = {
 */
 int init_module(void)
 {
+    printk(KERN_ALERT "[init module %s", DEVICE_NAME);
     Major = register_chrdev(0, DEVICE_NAME, &fops);
     if (Major < 0)
     {
@@ -62,6 +63,7 @@ int init_module(void)
 }
 void cleanup_module(void)
 {
+    printk(KERN_ALERT "[cleanup module %s", DEVICE_NAME);
     /*
 * Отключение устройства
 */
@@ -81,6 +83,7 @@ void cleanup_module(void)
 static int device_open(struct inode *inode, struct file *file)
 {
     static int counter = 0;
+    printk(KERN_ALERT "[device open (module %s)", DEVICE_NAME);
     if (Device_Open)
         return -EBUSY;
     Device_Open++;
@@ -101,6 +104,7 @@ static int device_release(struct inode *inode, struct file *file)
 * вы никогда не сможете выгрузить модуль.
 */
     module_put(THIS_MODULE);
+    printk(KERN_ALERT "[device release (module %s)", DEVICE_NAME);
     return 0;
 }
 /*
@@ -115,10 +119,11 @@ static ssize_t device_read(struct file *filp,
                            size_t length,
                            loff_t *offset)
 {
+    int bytes_read = 0;
+    printk(KERN_ALERT "[device read (module %s)", DEVICE_NAME);
     /*
 * Количество байт, фактически записанных в буфер
 */
-    int bytes_read = 0;
     /*
 * Если достигли конца сообщения,
 * вернуть 0, как признак конца файла
@@ -157,6 +162,6 @@ static ssize_t device_read(struct file *filp,
 static ssize_t
 device_write(struct file *filp, const char *buff, size_t len, loff_t *off)
 {
-    printk("<1>Sorry, this operation isn't supported.\n");
+    printk("<1>[device write]Sorry, this operation isn't supported.\n");
     return -EINVAL;
 }
