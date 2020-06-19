@@ -10,7 +10,8 @@
 /*
 * Определения старшего номера устройства и коды операций ioctl
 */
-#include "chardev_rw.h"
+#include <stdlib.h>
+#include "chardev.h"
 #include <fcntl.h>     /* open */
 #include <unistd.h>    /* exit */
 #include <sys/ioctl.h> /* ioctl */

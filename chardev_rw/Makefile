@@ -6,7 +6,7 @@ ifneq ($(KERNELRELEASE),)
 # call from kernel build system
 
 
-obj-m	+= chardev_rw.o
+obj-m	+= chardev.o
 
 
 else

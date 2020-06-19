@@ -4,9 +4,13 @@
 */
 #include <linux/module.h> /* Необходимо для любого модуля */
 #include <linux/kernel.h> /* Все-таки мы работаем с ядром! */
+#include <linux/init.h> /* Здесь находятся определения макросов */
 #include <linux/fs.h>
 #include <linux/uaccess.h> /* определения функций get_user и put_user */
 #include "chardev.h"
+
+#define DEBUG
+
 #define SUCCESS 0
 #define DEVICE_NAME "char_dev"
 #define BUF_LEN 80
@@ -132,7 +136,7 @@ device_write(struct file *file,
 * номер ioctl и дополнительные аргументы.
 *
 */
-int device_ioctl(struct inode *inode,    /* см. include/linux/fs.h */
+long device_ioctl(//struct inode *inode,    /* см. include/linux/fs.h */
                  struct file *file,      /* то же самое */
                  unsigned int ioctl_num, /* номер и аргументы ioctl */
                  unsigned long ioctl_param)
@@ -140,6 +144,7 @@ int device_ioctl(struct inode *inode,    /* см. include/linux/fs.h */
     int i;
     char *temp;
     char ch;
+    printk(KERN_ALERT "[in device ioctl func]");
     /*
 * Реакция на различные команды ioctl
 */
@@ -192,14 +197,14 @@ int device_ioctl(struct inode *inode,    /* см. include/linux/fs.h */
 struct file_operations Fops = {
     .read = device_read,
     .write = device_write,
-    .ioctl = device_ioctl,
+    .unlocked_ioctl = device_ioctl,
     .open = device_open,
     .release = device_release, /* оно же close */
 };
 /*
 * Инициализация модуля - Регистрация символьного устройства
 */
-int init_module()
+static int __init init_chardev(void)
 {
     int ret_val;
     /*
@@ -230,16 +235,21 @@ int init_module()
 /*
 * Завершение работы модуля - дерегистрация файла в /proc
 */
-void cleanup_module()
+static void __exit cleanup_chardev(void)
 {
-    int ret;
+    printk(KERN_ALERT "cleanup module");
+    // int ret;
     /*
 * Дерегистрация устройства
 */
-    ret = unregister_chrdev(MAJOR_NUM, DEVICE_NAME);
+    unregister_chrdev(MAJOR_NUM, DEVICE_NAME);
+    // ret = unregister_chrdev(MAJOR_NUM, DEVICE_NAME);
     /*
 * Если обнаружена ошибка -- вывести сообщение
 */
-    if (ret < 0)
-        printk("Error in module_unregister_chrdev: %d\n", ret);
+    // if (ret < 0)
+    //     printk("Error in module_unregister_chrdev: %d\n", ret);
 }
+
+module_init(init_chardev);
+module_exit(cleanup_chardev);
